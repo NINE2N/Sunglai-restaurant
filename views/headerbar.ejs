@@ -1,0 +1,100 @@
+<style>
+    /* การตั้งค่าพื้นหลังแถบเมนู */
+    nav {
+        /* กำหนดตำแหน่งแถบเมนูให้อยู่บนสุดของหน้า */
+        position: absolute;
+        top: 0;
+        /* แถบเมนูมีความกว้างเต็มหน้าจอ */
+        width: 100vw;
+        /* จัดเลย์เอาต์แถบเมนูให้ลิงก์อยู่ชิดซ้าย */
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        /* พื้นหลังของแถบเมนูเป็นสีเทาเข้ม */
+        background-color: #333;
+        /* ตั้งค่าระยะห่างภายในของแถบเมนู */
+        padding: 10px 20px;
+        /* กำหนดฟอนต์ของแถบเมนู */
+        font-family: Arial, sans-serif;
+    }
+
+    /* การตกแต่งลิงก์ในแถบเมนู */
+    nav a {
+        /* กำหนดสีของข้อความในลิงก์เป็นสีขาว */
+        color: #ffffff;
+        /* ยกเลิกการขีดเส้นใต้ */
+        text-decoration: none;
+        /* ขนาดของฟอนต์ลิงก์ */
+        font-size: 16px;
+        /* ระยะห่างภายในของลิงก์ */
+        padding: 8px 15px;
+        /* มุมของลิงก์ให้มีความโค้ง */
+        border-radius: 5px;
+        /* เพิ่มเอฟเฟกต์การเปลี่ยนสีพื้นหลังและสีตัวอักษร */
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* การตั้งค่าลูกเล่น hover */
+    nav a:hover {
+        /* เปลี่ยนพื้นหลังลิงก์เมื่อมีการชี้เมาส์ */
+        background-color: #555;
+        /* เปลี่ยนสีของข้อความเป็นสีเหลือง */
+        color: #ffcc00;
+    }
+
+    /* ปุ่ม logout */
+    .btn-danger {
+        /* กำหนดสีพื้นหลังปุ่ม logout เป็นสีแดง */
+        background-color: #d9534f;
+        /* สีของข้อความในปุ่ม */
+        color: #ffffff;
+        /* ทำให้ข้อความในปุ่มตัวหนา */
+        font-weight: bold;
+        /* ระยะห่างภายในปุ่ม */
+        padding: 8px 15px;
+        /* มุมปุ่มโค้งมน */
+        border-radius: 5px;
+        /* เอฟเฟกต์การเปลี่ยนพื้นหลังเมื่อ hover */
+        transition: background-color 0.3s;
+    }
+
+    .btn-danger:hover {
+        /* เปลี่ยนพื้นหลังของปุ่มเป็นสีแดงเข้มเมื่อชี้เมาส์ */
+        background-color: #c9302c;
+        color: #ffffff;
+    }
+
+    /* จัดกลุ่มลิงก์ให้ห่างกัน */
+    .nav-links {
+        /* ใช้ Flexbox และกำหนดระยะห่างระหว่างลิงก์ */
+        display: flex;
+        gap: 10px;
+    }
+</style>
+
+<nav>
+    <% if (!req.session.isLoggedIn) { %>
+        <!-- แสดงลิงก์ Menu และ Login หากยังไม่ได้เข้าสู่ระบบ -->
+        <a href="menu">Menu</a>
+        <a href="login">Login</a>
+    <% } else { %>
+        <% if (req.session.user.role_id === 1) { %>
+            <!-- แสดงลิงก์เฉพาะสำหรับผู้ใช้ที่มี role_id = 1 (ผู้ดูแลระบบ) -->
+            <a href="menu">Menu</a>
+            <a href="shop">Shop</a>
+            <a href="product_manage">Product Manage</a>
+            <a href="product_add">Product Add</a>
+            <a href="user_manage">User Manage</a>
+            <a href="staff_orders">Staff Orders</a>
+            <a href="order_Tracking">Order Tracking</a>
+            <a href="order_history">Order History</a>
+        <% } else if (req.session.user.role_id === 2) { %>
+            <!-- แสดงลิงก์สำหรับผู้ใช้ที่มี role_id = 2 (ผู้ใช้งานทั่วไป) -->
+            <a href="menu">Menu</a>
+            <a href="shop">Shop</a>
+            <a href="order_Tracking">Order Tracking</a>
+        <% } %>
+        <!-- แสดงปุ่ม Logout หากผู้ใช้เข้าสู่ระบบแล้ว -->
+        <a href="/logout" class="btn btn-danger">Logout</a>
+    <% } %>
+</nav>

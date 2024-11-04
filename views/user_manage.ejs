@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User_manage</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> <!-- รวม Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/style.css"> <!-- ลิงก์ไปยังไฟล์ CSS ที่กำหนดเอง -->
+    <style>
+        /* style.css */
+        body {
+            background: url('https://images.unsplash.com/photo-1605926637512-c8b131444a4b?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center/cover; /* ตั้งค่าภูมิหลังเป็นภาพ */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* ฟอนต์ที่ทันสมัย */
+            background: url('https://images.unsplash.com/photo-1605926637512-c8b131444a4b?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center/cover;
+            padding-top: 50px;
+        height: 100vh;
+        width: 100vw;
+        background-position: center;
+        background-size: cover;
+        }
+
+        .container {
+            background-color: #ffffff; /* สีพื้นหลังของกล่องตาราง */
+            padding: 30px; /* ระยะห่างด้านใน */
+            border-radius: 10px; /* ขอบมน */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* เงา */
+            max-width: 900px; /* กำหนดความกว้างสูงสุด */
+            margin: auto; /* จัดกลาง */
+        }
+
+        h2 {
+            color: #333; /* สีหัวข้อ */
+            text-align: center; /* จัดกลางหัวข้อ */
+            margin-bottom: 20px; /* ระยะห่างด้านล่าง */
+        }
+
+        .table {
+            width: 100%; /* ให้ตารางเต็มความกว้าง */
+            margin-bottom: 1rem; /* ระยะห่างด้านล่าง */
+            color: #212529; /* สีข้อความในตาราง */
+        }
+
+        .table-bordered {
+            border: 1px solid #dee2e6; /* สีขอบของตาราง */
+        }
+
+        .table thead th {
+            background-color: #007bff; /* สีพื้นหลังของหัวตาราง */
+            color: white; /* สีข้อความในหัวตาราง */
+            font-weight: bold; /* ทำให้หัวตารางหนา */
+        }
+
+        .table tbody tr {
+            transition: background-color 0.3s; /* การเปลี่ยนสีพื้นหลังอย่างนุ่มนวล */
+        }
+
+        .table tbody tr:hover {
+            background-color: #e9ecef; /* สีพื้นหลังเมื่อเลื่อนเมาส์ไปเหนือแถว */
+        }
+
+        .btn {
+            margin: 0 5px; /* ระยะห่างระหว่างปุ่ม */
+            padding: 8px 12px; /* ขนาดของปุ่ม */
+            border-radius: 4px; /* ขอบมน */
+        }
+
+        .btn-primary {
+            background-color: #007bff; /* สีพื้นหลังของปุ่ม edit */
+            border: none; /* ไม่มีขอบ */
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3; /* สีเมื่อเอาเมาส์ไปอยู่เหนือปุ่ม edit */
+        }
+
+        .btn-danger {
+            background-color: #dc3545; /* สีพื้นหลังของปุ่ม delete */
+            border: none; /* ไม่มีขอบ */
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333; /* สีเมื่อเอาเมาส์ไปอยู่เหนือปุ่ม delete */
+        }
+
+    </style>
+</head>
+<body>
+    <%- include('headerbar') %> <!-- รวมไฟล์ headerbar -->
+    <div class="container my-4"> <!-- คอนเทนเนอร์สำหรับจัดกลุ่มเนื้อหา -->
+        <table class="table table-bordered text-white"> <!-- ตารางสำหรับแสดงข้อมูลผู้ใช้ -->
+            <thead>
+                <tr> 
+                    <th>ลำดับ</th> <!-- คอลัมน์ลำดับ -->
+                    <th>ชื่อ-นามสกุล</th> <!-- คอลัมน์ชื่อและนามสกุล -->
+                    <th>เพศ</th> <!-- คอลัมน์เพศ -->
+                    <th>เบอร์โทรศัพท์</th> <!-- คอลัมน์เบอร์โทรศัพท์ -->
+                    <th>Manage</th> <!-- คอลัมน์สำหรับจัดการ -->
+                </tr>
+            </thead>
+            <tbody>
+                <% 
+                    let i = 1; // ตัวแปรสำหรับเก็บลำดับ
+                    user.forEach(user => {  // วนลูปผ่านข้อมูลผู้ใช้
+                %>
+                <tr id="user-<%= user.u_id %>"> <!-- แถวสำหรับผู้ใช้แต่ละคน -->
+                    <td><%= i %></td> <!-- แสดงลำดับ -->
+                    <td><%= user.title_name + ' ' + user.u_name + ' ' + user.u_surname %></td> <!-- แสดงชื่อ-นามสกุล -->
+                    <td><%= user.gender_name %></td> <!-- แสดงเพศ -->
+                    <td><%= user.u_tel %></td> <!-- แสดงเบอร์โทรศัพท์ -->
+                    <td>
+                        <button data-id="<%= user.u_id %>" class="edit btn btn-primary" style="margin-left:10px">edit</button> <!-- ปุ่มสำหรับแก้ไข -->
+                        <button data-id="<%= user.u_id %>" data-name="<%= user.title_name + ' ' + user.u_name + ' ' + user.u_surname %>" class="delete btn btn-danger" style="margin-left:10px">delete</button> <!-- ปุ่มสำหรับลบ -->
+                    </td>
+                </tr>
+                <% 
+                    i += 1; // เพิ่มลำดับ
+                    }); 
+                %> 
+            </tbody>
+        </table>
+    </div>
+    <script>
+        const editButtons = document.querySelectorAll('.edit'); // ดึงปุ่ม edit ทั้งหมด
+        const deleteButtons = document.querySelectorAll('.delete'); // ดึงปุ่ม delete ทั้งหมด
+    
+        editButtons.forEach((button) => { // สำหรับแต่ละปุ่ม edit
+            button.addEventListener('click', () => { // เมื่อคลิกปุ่ม
+                const u_id = button.getAttribute('data-id'); // ดึง ID ของผู้ใช้
+                window.location.href = `/user_edit/${u_id}`; // เปลี่ยนเส้นทางไปยังหน้าแก้ไขผู้ใช้
+            });
+        });
+    
+        deleteButtons.forEach((button) => { // สำหรับแต่ละปุ่ม delete
+            button.addEventListener('click', async () => { // เมื่อคลิกปุ่ม
+                const user_id = button.getAttribute('data-id'); // ดึง ID ของผู้ใช้ 
+                const user_name = button.getAttribute('data-name'); // ดึงชื่อผู้ใช้จาก data-name
+    
+                // ยืนยันการลบโดยใช้ชื่อผู้ใช้
+                const confirmDelete = confirm(`Are you sure you want to delete ${user_name}?`); // ยืนยันการลบ
+                if (!confirmDelete) {
+                    return; // ถ้าไม่ได้กด OK ให้หยุดการทำงานของฟังก์ชัน
+                }
+    
+                const response = await fetch(`/user_delete/${user_id}`, { // ส่งคำขอลบผู้ใช้
+                    method: 'DELETE',
+                });
+    
+                if (response.ok) { // ถ้าการลบสำเร็จ
+                    document.getElementById(`user-${user_id}`).remove(); // ลบแถวผู้ใช้จากตาราง
+                    console.log(`ลบผู้ใช้ ${user_name} สำเร็จ`); // แสดงข้อความใน console
+                } else {
+                    console.log('เกิดข้อผิดพลาดในการลบผู้ใช้'); // แสดงข้อความข้อผิดพลาดใน console
+                }
+            });
+        });
+    </script>
+</body>
+</html>

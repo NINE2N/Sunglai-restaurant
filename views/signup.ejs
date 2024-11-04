@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <style>
+        /* พื้นหลัง */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: url('https://images.unsplash.com/photo-1605926637512-c8b131444a4b?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center/cover;
+        }
+
+        /* กล่องคอนเทนเนอร์ */
+        .signup-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+            background: rgba(71, 69, 69, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* ตกแต่งหัวข้อ */
+        h2 {
+            color: #2d91ca;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        /* ฟิลด์ input และ select */
+        input[type="text"],
+        input[type="password"],
+        select {
+            padding: 12px;
+            margin-bottom: 15px;
+            width: 90%;
+            border: 2px solid #2d91ca;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #2d91ca;
+            box-shadow: 0 0 8px rgba(255, 126, 95, 0.5);
+        }
+
+        /* ปุ่ม */
+        button[type="submit"] {
+            padding: 12px;
+            width: 50%;
+            background-color: #2d91ca;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #2d91ca;
+        }
+
+        /* ข้อความแจ้ง */
+        #message {
+            margin-top: 15px;
+            color: #2d91ca;
+            font-size: 14px;
+        }
+
+        /* สไตล์สำหรับ label */
+        label {
+            align-self: flex-start;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <%- include('headerbar') %>
+    <div class="signup-container">
+        <h2>Signup</h2>
+        <form id="signupForm">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <input type="text" id="tel" placeholder="Telephone" required>
+
+            <h2>Title Name</h2>
+            <select name="titlename" id="titlename" required>
+                <% titlename.forEach(titlename => { %>
+                    <option value="<%= titlename.title_id %>"><%= titlename.title_name %></option>
+                <% }); %>
+            </select>
+
+            <input type="text" id="name" placeholder="Name" required>
+            <input type="text" id="surname" placeholder="Surname" required>
+
+            <h2>Gender</h2>
+            <select name="gender" id="gender" required>
+                <% genders.forEach(genders => { %>
+                    <option value="<%= genders.gender_id %>"><%= genders.gender_name %></option>
+                <% }); %>
+            </select>        
+
+            <button type="submit">Signup</button>
+        </form>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const tel = document.getElementById('tel').value;
+            const title_name = document.getElementById('titlename').value;
+            const name = document.getElementById('name').value;
+            const surname = document.getElementById('surname').value;
+            const gender = document.getElementById('gender').value;
+
+            try {
+                const response = await fetch('/signup', {   // fetch ส่งข้อมูลไป-รับข้อมูลกลับ
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password, tel, title_name, name, surname, gender })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('message').textContent = data.message;
+                    if (data.redirect) {
+                        setTimeout(() => {
+                            window.location.href = data.redirect;
+                        }, 500);
+                    }
+                } else {
+                    const errorText = await response.text();
+                    document.getElementById('message').textContent = errorText || 'Signup failed';
+                }
+            } catch (error) {
+                document.getElementById('message').textContent = 'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        /* พื้นหลัง */
+        body {
+            /* จัดกึ่งกลางเนื้อหาทั้งในแนวนอนและแนวตั้ง */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* ให้มีความสูงเต็มจอ */
+            height: 100vh;
+            margin: 0;
+            /* ตั้งค่าฟอนต์เริ่มต้น */
+            font-family: Arial, sans-serif;
+            /* ใช้ภาพเป็นพื้นหลัง ปรับให้ครอบคลุมพื้นที่ทั้งหมด */
+            background: url('https://images.unsplash.com/photo-1605926637512-c8b131444a4b?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center/cover;
+        }
+
+        /* กล่องคอนเทนเนอร์สำหรับปุ่ม */
+        .link-container {
+            /* จัดปุ่มลิงก์เรียงกันในแนวตั้ง */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* ความกว้างสูงสุดของคอนเทนเนอร์ */
+            width: 100%;
+            max-width: 200px;
+            /* ระยะห่างระหว่างปุ่ม */
+            gap: 15px;
+            /* ตั้งค่าสีพื้นหลังให้โปร่งแสง */
+            background: rgba(71, 69, 69, 0.9);
+            /* ระยะห่างภายในและขอบโค้งมน */
+            padding: 30px;
+            border-radius: 12px;
+            /* เพิ่มเงาให้กับกล่องคอนเทนเนอร์ */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ปุ่มลิงก์ */
+        .link-container a {
+            /* จัดปุ่มให้เต็มความกว้างคอนเทนเนอร์ */
+            display: inline-block;
+            width: 100%;
+            max-width: 200px;
+            /* ระยะห่างภายในปุ่ม */
+            padding: 12px;
+            /* จัดข้อความกึ่งกลาง */
+            text-align: center;
+            /* ขนาดฟอนต์และสีของข้อความ */
+            font-size: 25px;
+            color: #fff;
+            /* สีพื้นหลังปุ่ม */
+            background-color: #2d91ca;
+            /* ยกเลิกการขีดเส้นใต้ */
+            text-decoration: none;
+            /* ทำให้มุมปุ่มโค้งมน */
+            border-radius: 8px;
+            /* เพิ่มเอฟเฟกต์การเปลี่ยนสีและการเคลื่อนไหวเมื่อ hover */
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .link-container a:hover {
+            /* เปลี่ยนพื้นหลังปุ่มเล็กน้อยและยกขึ้นเมื่อ hover */
+            background-color: #2d91ca;
+            transform: translateY(-2px);
+        }
+
+        .link-container a:active {
+            /* สีพื้นหลังปุ่มคงที่เมื่อคลิก */
+            background-color: #2d91ca;
+            transform: translateY(0);
+        }
+
+        /* สไตล์สำหรับข้อความส่วนหัว */
+        h1 {
+            /* ขนาดฟอนต์ใหญ่พิเศษและสีขาว */
+            font-size: 120px;
+            color: #fff
+        }
+    </style>
+</head>
+
+<body>
+    <!-- แทรก headerbar จากไฟล์อื่นโดยใช้ EJS -->
+    <%- include('headerbar') %>
+    <!-- ข้อความส่วนหัวหลักของหน้า -->
+    <h1>SUNGLAI RESTURANT</h1>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        /* การตั้งค่าพื้นหลัง */
+        body {
+            /* จัดกึ่งกลางเนื้อหาทั้งในแนวนอนและแนวตั้ง */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* ให้มีความสูงเต็มจอ */
+            height: 100vh;
+            margin: 0;
+            /* ตั้งค่าฟอนต์เริ่มต้น */
+            font-family: Arial, sans-serif;
+            /* ใช้ภาพเป็นพื้นหลัง ปรับให้ครอบคลุมพื้นที่ทั้งหมด */
+            background: url('https://images.unsplash.com/photo-1605926637512-c8b131444a4b?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center/cover;
+        }
+
+        /* กล่องคอนเทนเนอร์หลัก */
+        .login-container {
+            /* กำหนดความกว้างของกล่องล๊อกอิน */
+            width: 100%;
+            max-width: 400px;
+            /* ระยะห่างภายในและสีพื้นหลังโปร่งแสง */
+            padding: 20px;
+            background: rgba(71, 69, 69, 0.9);
+            /* ขอบโค้งมนและเงา */
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            /* จัดเรียงภายในกล่องในแนวตั้ง */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* ตกแต่งหัวข้อ */
+        h2 {
+            /* กำหนดสีและขนาดฟอนต์สำหรับหัวข้อ */
+            color: #2d91ca;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        /* การตกแต่ง input และปุ่ม */
+        input[type="text"],
+        input[type="password"] {
+            /* กำหนดระยะห่างภายใน */
+            padding: 12px;
+            margin-bottom: 12px;
+            /* กำหนดความกว้างของฟิลด์ */
+            width: 90%;
+            /* กำหนดเส้นขอบ */
+            border: 2px solid #5fbae9;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        /* สไตล์เมื่อ focus ที่ input */
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            /* เปลี่ยนสีเส้นขอบและเพิ่มเงา */
+            border-color: #ffa45b;
+            box-shadow: 0 0 8px rgba(255, 164, 91, 0.5);
+        }
+
+        /* ปุ่ม login */
+        button[type="submit"] {
+            padding: 12px;
+            width: 50%;
+            /* สีพื้นหลังปุ่ม */
+            background-color: #2d91ca;
+            color: #fff;
+            /* ไม่มีขอบ */
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            /* เพิ่มเอฟเฟกต์เมื่อ hover */
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        /* สไตล์เมื่อ hover ที่ปุ่ม */
+        button[type="submit"]:hover {
+            background-color: #2d91ca;
+        }
+
+        /* การตกแต่งลิงก์สมัครสมาชิก */
+        a {
+            color: #c5c208;
+            text-decoration: none;
+            font-size: 20px;
+            margin-top: 15px;
+        }
+
+        /* สไตล์เมื่อ hover ที่ลิงก์ */
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* การตกแต่งข้อความแจ้ง */
+        #message {
+            margin-top: 15px;
+            color: #680707;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- แทรก headerbar จากไฟล์อื่นโดยใช้ EJS -->
+    <%- include('headerbar') %>
+    
+    <!-- กล่องสำหรับการล็อกอิน -->
+    <div class="login-container">
+        <!-- หัวข้อการล็อกอิน -->
+        <h2>Login</h2>
+        <!-- แบบฟอร์มล็อกอิน -->
+        <form id="loginForm">
+            <!-- ฟิลด์กรอกชื่อผู้ใช้ -->
+            <input type="text" id="username" placeholder="Username" required>
+            <!-- ฟิลด์กรอกรหัสผ่าน -->
+            <input type="password" id="password" placeholder="Password" required>
+            <!-- ปุ่มส่งข้อมูลล็อกอิน -->
+            <button type="submit">Login</button>
+        </form>
+        <!-- ลิงก์ไปยังหน้าสมัครสมาชิก -->
+        <a href="signup">Signup</a>
+        <!-- ข้อความแสดงสถานะหรือข้อผิดพลาด -->
+        <div id="message"></div>
+    </div>
+
+    <!-- สคริปต์สำหรับจัดการการส่งข้อมูลแบบฟอร์ม -->
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            
+            // เก็บค่าชื่อผู้ใช้และรหัสผ่าน
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                // ส่งข้อมูลไปยังเซิร์ฟเวอร์ผ่าน fetch API
+                const response = await fetch('/login', {
+                    method: 'POST',                            // ส่งข้อมูลแบบไม่เปิดเผย
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password }) // ส่งข้อมูลในรูป JSON
+                });
+
+                if (response.ok) {
+                    // เมื่อเข้าสู่ระบบสำเร็จ จะเปลี่ยนเส้นทางไปยังหน้าที่กำหนด
+                    const data = await response.json();
+                    window.location.href = data.redirect || '/shop';
+                } else {
+                    // เมื่อเข้าสู่ระบบล้มเหลว จะแสดงข้อความข้อผิดพลาด
+                    const errorText = await response.json();
+                    document.getElementById('message').textContent = errorText.message || 'Login failed';
+                }
+            } catch (error) {
+                // แสดงข้อความเมื่อเกิดข้อผิดพลาดในการเชื่อมต่อ
+                document.getElementById('message').textContent = 'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>

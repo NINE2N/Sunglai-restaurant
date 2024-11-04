@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop</title>
+    
+    <!-- นำเข้า Bootstrap CSS เพื่อจัดรูปแบบหน้าเว็บ -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- นำเข้า CSS สไตล์ส่วนตัว -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <!-- นำเข้า DataTables CSS สำหรับการแสดงผลตาราง -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
+    
+    <!-- นำเข้า jQuery และ DataTables JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+    
+    <style>
+        /* CSS สำหรับการจัดรูปแบบหน้าเว็บ */
+        body {
+            background: url('https://images.unsplash.com/photo-1605926637512-c8b131444a4b?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center/cover;
+            padding-top: 50px; /* ระยะห่างด้านบน */
+        }
+
+        .container {
+            background-color: #fff; /* สีพื้นหลังของคอนเทนเนอร์ */
+            padding: 10px; /* ระยะห่างด้านใน */
+        }
+
+        /* การจัดรูปแบบตาราง */
+        .table {
+            background-color: #333; /* สีพื้นหลังของตาราง */
+            border-radius: 8px; /* ขอบมน */
+            overflow: hidden; /* ป้องกันการแสดงผลเกินขอบ */
+        }
+
+        thead th {
+            background-color: #007bff; /* สีพื้นหลังของหัวตาราง */
+            color: white; /* สีตัวอักษร */
+            text-align: center; /* จัดกลางข้อความ */
+        }
+
+        tbody td {
+            color: white; /* สีตัวอักษรในแถวข้อมูล */
+            vertical-align: middle; /* จัดให้อยู่กลางในแนวตั้ง */
+        }
+
+        tbody tr:hover {
+            background-color: #444; /* สีพื้นหลังเมื่อเลื่อนเมาส์อยู่เหนือแถว */
+        }
+
+        /* การจัดรูปแบบปุ่ม */
+        .btn {
+            border-radius: 5px; /* ขอบมน */
+            padding: 5px 10px; /* ระยะห่างด้านใน */
+            font-weight: bold; /* ทำให้ตัวอักษรหนา */
+        }
+
+        .btn-primary {
+            background-color: #007bff; /* สีพื้นหลังของปุ่มสีฟ้า */
+            border-color: #007bff; /* สีขอบของปุ่มสีฟ้า */
+        }
+
+        .btn-danger {
+            background-color: #dc3545; /* สีพื้นหลังของปุ่มสีแดง */
+            border-color: #dc3545; /* สีขอบของปุ่มสีแดง */
+        }
+
+        .btn-primary:hover, .btn-danger:hover {
+            opacity: 0.85; /* เปลี่ยนความโปร่งแสงเมื่อเอาเมาส์ไปอยู่เหนือปุ่ม */
+        }
+
+        /* การจัดรูปแบบภาพ */
+        .card-img-top {
+            border-radius: 5px; /* ขอบมน */
+            max-width: 80px; /* ความกว้างสูงสุด */
+            max-height: 80px; /* ความสูงสูงสุด */
+            object-fit: cover; /* ทำให้ภาพพอดีกับขนาด */
+        }
+    </style>
+</head>
+<body>
+    <!-- แทรก headerbar จากไฟล์อื่น -->
+    <%- include('headerbar') %>
+    
+    <div class="container my-4">
+        <!-- ตารางแสดงสินค้าทั้งหมด -->
+        <table id="shopTable" class="table table-bordered text-white">
+            <thead>
+                <tr>
+                    <th>ลำดับ</th>
+                    <th>รูปภาพ</th>
+                    <th>ชื่ออาหาร</th>
+                    <th>ประเภทอาหาร</th>
+                    <th>ราคา</th>
+                    <th>Manage</th> <!-- หมายถึงการจัดการสินค้า เช่น แก้ไขและลบ -->
+                </tr>
+            </thead>
+            <tbody>
+                <% 
+                    let i = 1; // ตัวแปรเพื่อเก็บลำดับสินค้า
+                    products.forEach(product => { 
+                %>
+                <tr id="product-<%= product.id %>"> <!-- แต่ละแถวของตารางสินค้า -->
+                    <td><%= i %></td> <!-- แสดงลำดับสินค้า -->
+                    <td><img src="/uploads/<%= product.img %>" class="card-img-top" alt="<%= product.name %>" style="width: 100px; height: auto;"></td> <!-- แสดงรูปภาพสินค้า -->
+                    <td><%= product.name %></td> <!-- แสดงชื่อสินค้า -->
+                    <td><%= product.category %></td> <!-- แสดงประเภทสินค้า -->
+                    <td><%= product.price %></td> <!-- แสดงราคา -->
+                    <td>
+                        <!-- ปุ่มแก้ไข -->
+                        <button data-id="<%= product.id %>" class="edit btn btn-primary" style="margin-left:10px">edit</button>
+                        <!-- ปุ่มลบ -->
+                        <button data-id="<%= product.id %>" data-name="<%= product.name %>" class="delete btn btn-danger" style="margin-left:10px">delete</button>
+                    </td>
+                </tr>
+                <% 
+                    i += 1; // เพิ่มค่าลำดับ
+                    }); 
+                %> 
+            </tbody>
+        </table>
+    </div>
+
+    <!-- สคริปต์สำหรับการตั้งค่า DataTables -->
+    <script>
+        $(document).ready(function() {
+            // ตั้งค่าตารางให้ใช้ DataTables
+            $('#shopTable').DataTable({
+                dom: 'Bfrtip', // กำหนดการแสดงปุ่ม
+                buttons: [
+                    {
+                        extend: 'excelHtml5', // ปุ่มสำหรับส่งออกข้อมูลเป็น Excel
+                        text: 'Export to Excel', // ข้อความปุ่ม
+                        filename: 'Shop_Product_List', // ชื่อไฟล์
+                        title: 'Shop Product List' // ชื่อหัวข้อ
+                    }
+                ]
+            });
+        });
+    
+        // ดึงปุ่ม edit และ delete
+        const editButtons = document.querySelectorAll('.edit');
+        const deleteButtons = document.querySelectorAll('.delete');
+    
+        // เพิ่ม event listener ให้กับปุ่ม edit แต่ละปุ่ม
+        editButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                const product_id = button.getAttribute('data-id'); // ดึง ID ของสินค้า
+                window.location.href = `/product_edit/${product_id}`; // เปลี่ยนเส้นทางไปยังหน้าแก้ไขสินค้า
+            });
+        });
+    
+        // เพิ่ม event listener ให้กับปุ่ม delete แต่ละปุ่ม พร้อมการแจ้งเตือนยืนยัน
+        deleteButtons.forEach((button) => {
+            button.addEventListener('click', async () => {
+                const product_id = button.getAttribute('data-id'); // ดึง ID ของสินค้า
+                const product_name = button.getAttribute('data-name'); // ดึงชื่อสินค้า
+
+                // ยืนยันการลบ
+                const confirmDelete = confirm(`Are you sure you want to delete the product "${product_name}"?`);
+                if (!confirmDelete) {
+                    return; // ถ้าไม่ได้กด OK ให้หยุดการทำงานของฟังก์ชัน
+                }
+
+                // ถ้ากดยืนยันการลบแล้ว ดำเนินการลบ
+                const response = await fetch(`/product_delete/${product_id}`, {
+                    method: 'DELETE', // ใช้วิธีการลบ
+                });
+
+                if (response.ok) {
+                    console.log(`ลบสินค้าด้วย ID ${product_id} สำเร็จ`); // แจ้งเตือนการลบสำเร็จ
+                    document.getElementById(`product-${product_id}`).remove(); // ลบแถวสินค้าจากตาราง
+                } else {
+                    console.log('เกิดข้อผิดพลาดในการลบสินค้า'); // แจ้งเตือนถ้ามีข้อผิดพลาด
+                }
+            });
+        });
+
+    </script>
+    
+</body>
+</html>

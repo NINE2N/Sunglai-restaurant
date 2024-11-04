@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แก้ไขสินค้า</title>
+    
+    <!-- นำเข้า Bootstrap CSS เพื่อช่วยในการจัดสไตล์และรูปแบบของฟอร์ม -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        /* CSS สำหรับการจัดรูปแบบหน้าแก้ไขสินค้า */
+        
+        body {
+            background: url('https://images.unsplash.com/photo-1605926637512-c8b131444a4b?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center/cover;
+            padding-top: 50px; /* ระยะห่างด้านบน */
+        }
+
+        .container {
+            background-color: #ffffff; /* สีพื้นหลังของฟอร์ม */
+            padding: 30px; /* ระยะห่างด้านใน */
+            border-radius: 10px; /* ขอบมน */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* เงา */
+            max-width: 600px; /* กำหนดความกว้างสูงสุด */
+            margin: auto; /* จัดให้อยู่กลางหน้าจอ */
+        }
+
+        h2 {
+            color: #333; /* สีของหัวข้อ */
+            text-align: center; /* จัดหัวข้อให้อยู่ตรงกลาง */
+            margin-bottom: 20px; /* ระยะห่างด้านล่าง */
+        }
+
+        .form-label {
+            font-weight: bold; /* ทำให้ชื่อฟิลด์หนา */
+        }
+
+        .form-control {
+            border-radius: 5px; /* ขอบมน */
+            border: 1px solid #ced4da; /* สีขอบ */
+        }
+
+        .form-control:focus {
+            border-color: #007bff; /* เปลี่ยนสีขอบเมื่อโฟกัส */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* เงาเมื่อโฟกัส */
+        }
+
+        .btn-primary {
+            background-color: #007bff; /* สีพื้นหลังของปุ่ม */
+            border: none; /* ไม่มีขอบ */
+            border-radius: 5px; /* ขอบมน */
+            padding: 10px 20px; /* ระยะห่างด้านใน */
+            font-size: 16px; /* ขนาดฟอนต์ */
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3; /* สีเมื่อเอาเมาส์ไปอยู่เหนือปุ่ม */
+            transition: background-color 0.3s ease; /* การเปลี่ยนสีอย่างนุ่มนวล */
+        }
+
+        .mb-3 {
+            margin-bottom: 1.5rem; /* ระยะห่างด้านล่างของแต่ละฟิลด์ */
+        }
+    </style>
+</head>
+<body>
+    <!-- แทรก headerbar จากไฟล์อื่น -->
+    <%- include('headerbar') %>
+    
+    <div class="container my-4">
+        <h2>แก้ไขสินค้า</h2>
+        
+        <!-- ฟอร์มสำหรับแก้ไขสินค้า -->
+        <form action="/update-product/<%= product.pro_id %>" method="POST" enctype="multipart/form-data">
+            
+            <!-- ฟิลด์ชื่อสินค้า -->
+            <div class="mb-3">
+                <label for="name" class="form-label">ชื่อสินค้า</label>
+                <input type="text" class="form-control" id="name" name="name" value="<%= product.pro_name %>" required>
+            </div>
+
+            <!-- ฟิลด์ประเภทสินค้า -->
+            <div class="mb-3">
+                <label for="category" class="form-label">ประเภทสินค้า</label>
+                <select id="category" name="category" class="form-select" required>
+                    <% products_type.forEach(type => { %>
+                        <!-- แสดงประเภทสินค้าทั้งหมด โดยเลือกประเภทปัจจุบันของสินค้า -->
+                        <option value="<%= type.pt_id %>" <%= type.pt_id === product.pt_id ? 'selected' : '' %>>
+                            <%= type.pt_name_eng %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <!-- ฟิลด์ราคา -->
+            <div class="mb-3">
+                <label for="price" class="form-label">ราคา</label>
+                <input type="number" class="form-control" id="price" name="price" value="<%= product.pro_price %>" required>
+            </div>
+
+            <!-- ฟิลด์อัปโหลดรูปภาพใหม่ -->
+            <div class="mb-3">
+                <label for="img" class="form-label">อัปโหลดรูปภาพใหม่ (ถ้ามี)</label>
+                <input type="file" class="form-control" id="img" name="img">
+                
+                <!-- แสดงรูปภาพปัจจุบันของสินค้า -->
+                <% if (product.pro_img) { %>
+                    <img src="/uploads/<%= product.pro_img %>" alt="Product Image" style="width: 100px; margin-top: 10px;">
+                <% } %>
+            </div>
+
+            <!-- ปุ่มบันทึกการเปลี่ยนแปลง -->
+            <button type="submit" class="btn btn-primary">บันทึกการเปลี่ยนแปลง</button>
+        </form>
+    </div>
+</body>
+</html>

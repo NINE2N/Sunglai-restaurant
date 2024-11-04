@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History</title>
+    
+    <!-- นำเข้า Bootstrap CSS เพื่อจัดการกับโครงสร้างและสไตล์ -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- นำเข้า DataTables CSS สำหรับการสร้างตารางที่สามารถจัดการได้ -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.3/css/buttons.dataTables.min.css">
+    
+    <!-- นำเข้า jQuery และ DataTables JavaScript เพื่อใช้ฟังก์ชัน DataTables -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+    
+    <!-- นำเข้า JSZip และ PDFMake สำหรับฟีเจอร์การดาวน์โหลดไฟล์ Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+    
+    <style>
+        /* กำหนดพื้นหลังของหน้าเว็บ */
+        body {
+            background: url('https://images.unsplash.com/photo-1605926637512-c8b131444a4b?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center/cover;
+            padding-top: 50px;
+    height: 100vh;
+    width: 100vw;
+    background-position: center;
+    background-size: cover;
+        }
+
+        /* การตั้งค่าลักษณะของคอนเทนเนอร์ */
+        .container {
+            background-color: #fff;
+            padding: 10px;
+        }
+
+        /* การตั้งค่าลักษณะของตาราง */
+        .table {
+            background-color: #333;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* การตั้งค่าลักษณะของส่วนหัวตาราง */
+        thead th {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+        }
+
+        /* การตั้งค่าลักษณะของส่วนตัวข้อมูลในตาราง */
+        tbody td {
+            color: white;
+            vertical-align: middle;
+        }
+
+        /* เปลี่ยนสีพื้นหลังเมื่อเอาเมาส์ไปชี้ */
+        tbody tr:hover {
+            background-color: #444;
+        }
+
+        /* ปุ่มต่าง ๆ */
+        .btn {
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-primary:hover, .btn-danger:hover {
+            opacity: 0.85;
+        }
+
+        /* การตั้งค่าลักษณะของรูปภาพ */
+        .card-img-top {
+            border-radius: 5px;
+            max-width: 80px;
+            max-height: 80px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- แทรกส่วนของ header bar -->
+    <%- include('headerbar') %>
+    
+    <!-- คอนเทนเนอร์สำหรับประวัติการสั่งซื้อ -->
+    <div class="container my-4">
+        <h2 class="text-center">Order History</h2>
+        
+        <!-- ตารางแสดงประวัติการสั่งซื้อ -->
+        <table id="orderTable" class="table table-bordered text-white">
+            <thead class="table-light">
+                <tr>
+                    <th>Order Number</th>
+                    <th>Customer</th>
+                    <th>Ordered Items</th>
+                    <th>Order Date</th>
+                    <th>Total Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- ใช้คำสั่ง JavaScript เพื่อแสดงข้อมูลประวัติการสั่งซื้อ -->
+                <% 
+                    let i = 1; // สร้างตัวแปรเพื่อนับเลขลำดับ
+                    orders.forEach(order => { // วนลูปข้อมูลคำสั่งซื้อ
+                %>
+                <tr id="order-<%= order.order_id %>">
+                    <td><%= i %></td>
+                    <td><%= order.customer_name %></td>
+                    <td><%= order.ordered_items %></td>
+                    <td><%= new Date(order.order_date).toLocaleString() %></td>
+                    <td>$<%= order.total_amount.toFixed(2) %></td>
+                </tr>
+                <% 
+                    i += 1;
+                    }); 
+                %> 
+            </tbody>
+        </table>
+    </div>
+
+    <!-- สคริปต์สำหรับการตั้งค่า DataTables -->
+    <script>
+        $(document).ready(function() {
+            $('#orderTable').DataTable({
+                dom: 'Bfrtip', // ใช้ dom เพื่อกำหนดปุ่ม export
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: 'Export to Excel', // ปุ่ม Export to Excel
+                        filename: 'Order_History_List', // ชื่อไฟล์ที่บันทึก
+                        title: 'Order History List'
+                    }
+                ]
+            });
+        });
+    </script>
+</body>
+</html>

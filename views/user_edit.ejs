@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User_edit</title>
+    <style>
+        body {
+            background: url('https://images.unsplash.com/photo-1605926637512-c8b131444a4b?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center/cover; /* ตั้งค่าภูมิหลังเป็นภาพ */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* ฟอนต์ที่ทันสมัย */
+            padding-top: 100px; /* เพิ่มระยะห่างที่ด้านบน */
+            display: flex; /* ใช้ Flexbox เพื่อจัดตำแหน่ง */
+            justify-content: center; /* จัดกลางในแนวนอน */
+            align-items: center; /* จัดกลางในแนวตั้ง */
+            flex-direction: column; /* จัดแนวในแนวตั้ง */
+        }
+
+        h2 {
+            text-align: center; /* จัดกลางข้อความ */
+            color: #fff; /* สีข้อความเป็นสีขาว */
+            margin-bottom: 20px; /* ระยะห่างด้านล่าง */
+            font-weight: 600; /* ความหนาของฟอนต์ */
+        }
+
+        form {
+            background-color: #fff; /* สีพื้นหลังของฟอร์ม */
+            padding: 30px; /* ระยะห่างภายในฟอร์ม */
+            border-radius: 8px; /* มุมโค้ง */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* เงา */
+            max-width: 400px; /* ความกว้างสูงสุด */
+            width: 100%; /* ความกว้าง 100% ของคอนเทนเนอร์ */
+        }
+
+        label {
+            display: block; /* แสดง label เป็นบล็อก */
+            margin-bottom: 8px; /* ระยะห่างด้านล่าง */
+            color: #555; /* สีข้อความ */
+            font-weight: 500; /* ความหนาของฟอนต์ */
+        }
+
+        select, input[type="text"] {
+            width: 100%; /* ความกว้าง 100% */
+            padding: 10px; /* ระยะห่างภายใน */
+            margin-bottom: 15px; /* ระยะห่างด้านล่าง */
+            border: 1px solid #ccc; /* กรอบสีเทา */
+            border-radius: 4px; /* มุมโค้ง */
+            font-size: 16px; /* ขนาดฟอนต์ */
+            transition: border-color 0.3s; /* การเปลี่ยนสีกรอบ */
+        }
+
+        select:focus, input[type="text"]:focus {
+            border-color: #007bff; /* สีกรอบเมื่อมีการโฟกัส */
+            outline: none; /* ลบกรอบรอบ */
+        }
+
+        button {
+            width: 100%; /* ความกว้าง 100% */
+            padding: 12px; /* ระยะห่างภายใน */
+            font-size: 16px; /* ขนาดฟอนต์ */
+            font-weight: bold; /* ความหนาของฟอนต์ */
+            background-color: #007bff; /* สีพื้นหลังปุ่ม */
+            color: #fff; /* สีข้อความในปุ่ม */
+            border: none; /* ไม่มีกรอบ */
+            border-radius: 4px; /* มุมโค้ง */
+            cursor: pointer; /* แสดงว่าเป็นปุ่มคลิกได้ */
+            transition: background-color 0.3s; /* การเปลี่ยนสีพื้นหลัง */
+        }
+
+        button:hover {
+            background-color: #0056b3; /* สีพื้นหลังเมื่อชี้เมาส์ไปที่ปุ่ม */
+        }
+
+        #message {
+            margin-top: 20px; /* ระยะห่างด้านบน */
+            color: #28a745; /* สีข้อความ */
+            text-align: center; /* จัดกลางข้อความ */
+        }
+    </style>
+</head>
+<body>
+    <%- include('headerbar') %> <!-- รวมไฟล์ headerbar -->
+    <h2>User_edit</h2> <!-- หัวข้อหลักของหน้า -->
+    <form action="/update-user/<%= user_edit.u_id %>" method="POST"> <!-- ฟอร์มสำหรับอัปเดตข้อมูลผู้ใช้ -->
+
+        <label for="titlename">Title Name:</label> <!-- Label สำหรับชื่อที่อยู่ -->
+        <select name="titlename" id="titlename" required> <!-- เมนูเลือกสำหรับชื่อที่อยู่ -->
+            <% titlename.forEach(titlename => { %> <!-- วนลูปผ่านตัวเลือกชื่อที่อยู่ -->
+                <option value="<%= titlename.title_id %>" <%= titlename.title_id === user_edit.title_id ? 'selected' : '' %>> <!-- ทำให้เลือกตัวเลือกที่ตรง -->
+                    <%= titlename.title_name %> <!-- แสดงชื่อที่อยู่ -->
+                </option>
+            <% }); %>
+        </select>
+        
+        <input name="name" type="text" id="name" placeholder="Name" required value="<%= user_edit.u_name %>"> <!-- ช่องกรอกชื่อผู้ใช้ -->
+        <input name="surname" type="text" id="surname" placeholder="Surname" required value="<%= user_edit.u_surname %>"> <!-- ช่องกรอกนามสกุล -->
+
+        <label for="gender">Gender:</label> <!-- Label สำหรับเพศ -->
+        <select name="gender" id="gender" required > <!-- เมนูเลือกเพศ -->
+            <% genders.forEach(genders => { %> <!-- วนลูปผ่านตัวเลือกเพศ -->
+                <option value="<%= genders.gender_id %>" <%= genders.gender_id === user_edit.gender_id ? 'selected' : '' %>> <!-- ทำให้เลือกตัวเลือกที่ตรง -->
+                    <%= genders.gender_name %> <!-- แสดงชื่อเพศ -->
+                </option>
+            <% }); %>
+        </select>        
+        <input name="tel" type="text" id="tel" placeholder="Telephone" required value="<%= user_edit.u_tel %>"> <!-- ช่องกรอกเบอร์โทรศัพท์ -->
+        <button type="submit">edit</button> <!-- ปุ่มสำหรับส่งข้อมูล -->
+    </form>
+
+    <div id="message"></div> <!-- พื้นที่สำหรับแสดงข้อความสถานะ -->
+</body>
+</html>
